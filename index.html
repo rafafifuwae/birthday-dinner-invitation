@@ -219,6 +219,28 @@
   }
   a:hover{ color: var(--brass-hi); text-decoration-color: currentColor; }
 
+  /* Thumb-sized target — the old inline link was too small to hit on a phone */
+  .chip{
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 44px;
+    margin-top: .25rem;
+    padding: .55rem 1.3rem;
+    font-family: var(--engraved);
+    font-size: 0.6rem;
+    letter-spacing: 0.24em;
+    text-indent: 0.24em;
+    text-transform: uppercase;
+    color: var(--brass-hi);
+    background: rgba(200,174,121,0.05);
+    border: 1px solid var(--brass-dim);
+    text-decoration: none;
+    transition: background .4s ease, border-color .4s ease, color .4s ease, transform .3s ease;
+  }
+  .chip:hover{ background: rgba(200,174,121,0.13); border-color: var(--brass); color: #FFF6E2; }
+  .chip:active{ transform: scale(.985); }
+
   /* ── Ornamental divider ─────────────────────────────────────── */
   .div{
     display: flex;
@@ -409,7 +431,10 @@
 
       <div class="block">
         <p class="eng">The place</p>
-        <p class="val">Donna Bar &amp; Lounge<span class="sub"><a href="https://maps.app.goo.gl/2YWZXosEnAr5ToKk6" target="_blank" rel="noopener noreferrer">Open in Maps &nearr;</a></span></p>
+        <p class="val">Donna Bar &amp; Lounge</p>
+        <!-- No target="_blank": in-app browsers (WhatsApp, Instagram) swallow new
+             windows, and same-tab navigation is what hands off to the Maps app. -->
+        <a class="chip" href="https://maps.app.goo.gl/2YWZXosEnAr5ToKk6">Open in Maps &nearr;</a>
       </div>
 
       <div class="block">
