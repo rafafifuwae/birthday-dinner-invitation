@@ -225,13 +225,12 @@
     display: inline-flex;
     align-items: center;
     justify-content: center;
+    gap: .55rem;
     min-height: 44px;
     margin-top: .25rem;
-    padding: .55rem 1.3rem;
+    padding: .55rem 1.25rem;
     font-family: var(--engraved);
     font-size: 0.6rem;
-    letter-spacing: 0.24em;
-    text-indent: 0.24em;
     text-transform: uppercase;
     color: var(--brass-hi);
     background: rgba(200,174,121,0.05);
@@ -241,6 +240,14 @@
   }
   .chip:hover{ background: rgba(200,174,121,0.13); border-color: var(--brass); color: #FFF6E2; }
   .chip:active{ transform: scale(.985); }
+  .chip svg{
+    width: 15px;
+    height: 15px;
+    flex: none;
+    display: block;
+  }
+  /* tracking lives on the label so it cannot push the icon off-centre */
+  .chip span{ letter-spacing: 0.24em; margin-right: -0.24em; }
 
   /* ── Ornamental divider ─────────────────────────────────────── */
   .div{
@@ -435,7 +442,16 @@
         <p class="val">Donna Bar &amp; Lounge</p>
         <!-- No target="_blank": in-app browsers (WhatsApp, Instagram) swallow new
              windows, and same-tab navigation is what hands off to the Maps app. -->
-        <a class="chip" href="https://maps.app.goo.gl/2YWZXosEnAr5ToKk6">Open in Maps &nearr;</a>
+        <a class="chip" href="https://maps.app.goo.gl/2YWZXosEnAr5ToKk6">
+          <!-- Feather "map-pin" (FiMapPin in react-icons), inlined. A text arrow
+               here rendered as a colour emoji on iOS; an SVG cannot be substituted. -->
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"
+               stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
+            <circle cx="12" cy="10" r="3"/>
+          </svg>
+          <span>Open in Maps</span>
+        </a>
       </div>
 
       <div class="block">
