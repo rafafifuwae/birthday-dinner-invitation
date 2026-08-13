@@ -48,6 +48,7 @@
     --deco:     Futura, "Futura PT", "Century Gothic", "Avenir Next", "Trebuchet MS", sans-serif;
     --engraved: Copperplate, "Copperplate Gothic Light", Futura, "Century Gothic", "Avenir Next", sans-serif;
     --body:     "Iowan Old Style", "Palatino Linotype", Palatino, "Book Antiqua", Georgia, serif;
+    --script:   "Snell Roundhand", "Apple Chancery", "Segoe Script", cursive;
 
     --gutter: clamp(1rem, 4vw, 2rem);
   }
@@ -171,18 +172,17 @@
     margin: 0;
   }
 
+  /* A script, so: no caps, no tracking, and slack at the sides for the swashes */
   .name{
-    font-family: var(--deco);
+    font-family: var(--script);
     font-weight: 400;
-    /* two long words, stacked — sized so the wider one clears the frame */
-    font-size: clamp(1.6rem, 8vw, 2.7rem);
-    line-height: 1.2;
-    letter-spacing: 0.2em;
-    text-indent: 0.2em;
-    text-transform: uppercase;
+    font-size: clamp(2.5rem, 12.5vw, 4.1rem);
+    line-height: 1.08;
+    letter-spacing: 0.01em;
     color: var(--ivory);
     margin: 0;
-    text-shadow: 0 0 40px rgba(241,229,198,0.22);
+    padding: 0 .3em;
+    text-shadow: 0 0 44px rgba(241,229,198,0.26);
   }
 
   .lede{
