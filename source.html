@@ -1,0 +1,497 @@
+<title>Reserved at Donna</title>
+
+<script>document.documentElement.classList.add('js');</script>
+
+<style>
+  :root{
+    /* Unlit charcoal and champagne gold — a lounge after the lights go down */
+    --pitch:     #070605;
+    --coal:      #100D0B;
+    --coal-2:    #17130E;
+    --hair:      rgba(200,174,121,0.16);
+
+    --brass:     #C8AE79;
+    --brass-hi:  #F1E5C6;
+    --brass-dim: rgba(200,174,121,0.40);
+
+    --ivory:     #F2EAD9;
+    --smoke:     #A79C8B;
+    --smoke-dim: #7B7263;
+
+    --deco:     Futura, "Futura PT", "Century Gothic", "Avenir Next", "Trebuchet MS", sans-serif;
+    --engraved: Copperplate, "Copperplate Gothic Light", Futura, "Century Gothic", "Avenir Next", sans-serif;
+    --body:     "Iowan Old Style", "Palatino Linotype", Palatino, "Book Antiqua", Georgia, serif;
+
+    --gutter: clamp(1rem, 4vw, 2rem);
+  }
+
+  *{ box-sizing: border-box; }
+
+  html{ background: var(--pitch); }
+
+  body{
+    margin: 0;
+    background:
+      radial-gradient(80% 40% at 50% 0%,  rgba(200,174,121,0.07), rgba(200,174,121,0) 62%),
+      radial-gradient(110% 65% at 50% 40%, rgba(38,30,22,0.75),   rgba(38,30,22,0) 74%),
+      linear-gradient(180deg, #0C0A08 0%, var(--pitch) 58%, #050504 100%);
+    background-attachment: fixed;
+    color: var(--smoke);
+    font-family: var(--body);
+    font-size: 16px;
+    line-height: 1.75;
+    -webkit-font-smoothing: antialiased;
+    -webkit-text-size-adjust: 100%;
+    -webkit-tap-highlight-color: transparent;
+    overflow-x: hidden;
+    /* clears the notch on iPhone and the home indicator on both */
+    padding-top:    max(clamp(1.25rem, 5vw, 3.5rem), env(safe-area-inset-top));
+    padding-right:  max(var(--gutter), env(safe-area-inset-right));
+    padding-bottom: max(clamp(2.5rem, 6vw, 4.5rem), calc(env(safe-area-inset-bottom) + 2rem));
+    padding-left:   max(var(--gutter), env(safe-area-inset-left));
+  }
+
+  /* iPad and up — the card can breathe a little wider */
+  @media (min-width: 820px){
+    .card{ width: min(100%, 35rem); }
+  }
+
+  .grain{
+    position: fixed; inset: 0; z-index: 0; pointer-events: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='180' height='180' filter='url(%23n)'/%3E%3C/svg%3E");
+    opacity: 0.06;
+    mix-blend-mode: soft-light;
+  }
+  .vignette{
+    position: fixed; inset: 0; z-index: 0; pointer-events: none;
+    background: radial-gradient(115% 78% at 50% 38%, rgba(0,0,0,0) 42%, rgba(0,0,0,0.7) 100%);
+  }
+
+  /* ── The card ───────────────────────────────────────────────── */
+  .stage{
+    position: relative;
+    z-index: 1;
+    perspective: 1400px;
+    display: flex;
+    justify-content: center;
+  }
+
+  .card{
+    width: min(100%, 33rem);
+    background:
+      radial-gradient(120% 55% at 50% 0%, rgba(200,174,121,0.075), rgba(200,174,121,0) 58%),
+      linear-gradient(170deg, var(--coal-2) 0%, var(--coal) 44%, #0C0B09 100%);
+    border: 1px solid var(--brass-dim);
+    box-shadow:
+      0 0 0 1px rgba(0,0,0,0.55),
+      0 50px 110px rgba(0,0,0,0.72),
+      inset 0 1px 0 rgba(241,229,198,0.10);
+    padding: clamp(2.5rem, 7vw, 3.75rem) clamp(1.5rem, 6vw, 3rem) clamp(2.75rem, 7vw, 3.5rem);
+    text-align: center;
+    position: relative;
+    transform-style: preserve-3d;
+    transition: transform .35s cubic-bezier(.2,.7,.2,1);
+  }
+  /* the second rule of the frame */
+  .card::before{
+    content: "";
+    position: absolute;
+    inset: 9px;
+    border: 1px solid rgba(200,174,121,0.24);
+    pointer-events: none;
+  }
+
+  .inner{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1.5rem;
+  }
+
+  /* ── Deco arch ──────────────────────────────────────────────── */
+  .arch{
+    position: relative;
+    width: clamp(112px, 32vw, 148px);
+    height: clamp(78px, 22vw, 102px);
+    border: 1px solid var(--brass-dim);
+    border-bottom: 0;
+    border-radius: 999px 999px 0 0;
+    overflow: hidden;
+  }
+  /* a fan of brass rays converging on the sill of the arch */
+  .arch .rays{
+    position: absolute;
+    left: 50%;
+    bottom: -110%;
+    width: 260%;
+    aspect-ratio: 1;
+    transform: translateX(-50%);
+    background: repeating-conic-gradient(from 0deg,
+      rgba(200,174,121,0.5) 0deg 0.45deg,
+      rgba(200,174,121,0) 0.45deg 4.2deg);
+    -webkit-mask-image: radial-gradient(closest-side, #000 12%, rgba(0,0,0,0.7) 34%, rgba(0,0,0,0.25) 52%, transparent 66%);
+            mask-image: radial-gradient(closest-side, #000 12%, rgba(0,0,0,0.7) 34%, rgba(0,0,0,0.25) 52%, transparent 66%);
+  }
+
+  /* ── Type roles ─────────────────────────────────────────────── */
+  .eng{
+    font-family: var(--engraved);
+    font-size: 0.66rem;
+    letter-spacing: 0.3em;
+    text-indent: 0.3em;
+    text-transform: uppercase;
+    color: var(--brass);
+    margin: 0;
+  }
+
+  .name{
+    font-family: var(--deco);
+    font-weight: 400;
+    font-size: clamp(2rem, 10.5vw, 3.4rem);
+    line-height: 1.05;
+    letter-spacing: 0.24em;
+    text-indent: 0.24em;
+    text-transform: uppercase;
+    color: var(--ivory);
+    margin: 0;
+    text-shadow: 0 0 40px rgba(241,229,198,0.22);
+  }
+
+  .lede{
+    font-family: var(--body);
+    font-style: italic;
+    font-size: clamp(1.02rem, 3.6vw, 1.18rem);
+    line-height: 1.6;
+    color: var(--ivory);
+    margin: 0;
+    max-width: 22rem;
+    text-wrap: balance;
+  }
+
+  .val{
+    font-family: var(--body);
+    font-size: 1.2rem;
+    line-height: 1.45;
+    color: var(--ivory);
+    margin: 0;
+  }
+  .sub{
+    display: block;
+    margin-top: .35rem;
+    font-family: var(--deco);
+    font-size: 0.78rem;
+    letter-spacing: 0.08em;
+    color: var(--smoke);
+  }
+
+  a{
+    color: var(--brass);
+    text-decoration-color: rgba(200,174,121,0.4);
+    text-underline-offset: 4px;
+    transition: color .35s ease, text-decoration-color .35s ease;
+  }
+  a:hover{ color: var(--brass-hi); text-decoration-color: currentColor; }
+
+  /* ── Ornamental divider ─────────────────────────────────────── */
+  .div{
+    display: flex;
+    align-items: center;
+    gap: .8rem;
+    width: 100%;
+    max-width: 20rem;
+    color: var(--brass);
+  }
+  .div::before, .div::after{
+    content: "";
+    flex: 1;
+    height: 1px;
+    background: linear-gradient(90deg, rgba(200,174,121,0), rgba(200,174,121,0.45));
+  }
+  .div::after{ background: linear-gradient(90deg, rgba(200,174,121,0.45), rgba(200,174,121,0)); }
+  .div i{
+    display: block;
+    width: 6px; height: 6px;
+    transform: rotate(45deg);
+    border: 1px solid var(--brass);
+  }
+
+  /* ── Blocks ─────────────────────────────────────────────────── */
+  .block{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: .7rem;
+  }
+
+  /* Countdown strip */
+  .clock{
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    gap: clamp(.7rem, 3.5vw, 1.4rem);
+  }
+  .unit{ display: flex; flex-direction: column; align-items: center; gap: .45rem; min-width: 3ch; }
+  .unit b{
+    font-family: var(--deco);
+    font-weight: 400;
+    font-size: clamp(1.35rem, 6vw, 1.9rem);
+    line-height: 1;
+    letter-spacing: 0.08em;
+    color: var(--brass-hi);
+    font-variant-numeric: tabular-nums;
+    font-feature-settings: "tnum" 1;
+  }
+  .unit span{
+    font-family: var(--engraved);
+    font-size: 0.56rem;
+    letter-spacing: 0.22em;
+    text-indent: 0.22em;
+    text-transform: uppercase;
+    color: var(--smoke);
+  }
+  .colon{
+    font-family: var(--deco);
+    font-size: clamp(1.1rem, 5vw, 1.5rem);
+    color: var(--brass-dim);
+    line-height: 1.1;
+  }
+
+  /* Dress code */
+  .code{ display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: center; gap: 1rem 1.2rem; }
+  .code .set{ display: flex; align-items: flex-end; gap: .8rem; }
+  .code .rule{ width: 1px; align-self: stretch; background: var(--hair); }
+  .code svg{ height: 50px; width: auto; display: block; }
+  .code .dress{ height: 58px; }
+  .ivory-fill{ fill: rgba(242,234,217,0.92); }
+  .pitch-fill{ fill: #0A0908; }
+  .brass-line{ stroke: rgba(200,174,121,0.85); }
+  .pitch-line{ stroke: rgba(10,9,8,0.5); }
+  .veil{ fill: rgba(242,234,217,0.07); }
+
+  /* Note */
+  .note{ max-width: 25rem; }
+  .note p{
+    font-family: var(--body);
+    font-size: 1.06rem;
+    line-height: 1.85;
+    color: rgba(242,234,217,0.86);
+    margin: 0 0 1rem;
+  }
+  .note p:last-child{ margin-bottom: 0; }
+  .note .sig{
+    margin: 1.7rem 0 0;
+    font-family: var(--engraved);
+    font-size: 0.66rem;
+    line-height: 1.6;
+    color: var(--brass);
+  }
+
+  /* RSVP */
+  .yes{
+    font-family: var(--engraved);
+    font-size: 0.66rem;
+    letter-spacing: 0.28em;
+    text-indent: 0.28em;
+    text-transform: uppercase;
+    color: var(--brass-hi);
+    background: rgba(200,174,121,0.06);
+    border: 1px solid var(--brass-dim);
+    padding: 1rem 2.2rem;
+    cursor: pointer;
+    transition: background .45s ease, border-color .45s ease, color .45s ease, transform .45s ease;
+  }
+  .yes:hover{ background: rgba(200,174,121,0.16); border-color: var(--brass); color: #FFF3D8; }
+  .yes:active{ transform: scale(.985); }
+  .yes[hidden]{ display: none; }
+
+  .confirmed{ display: none; flex-direction: column; gap: .5rem; }
+  .confirmed.on{ display: flex; animation: rise .9s cubic-bezier(.19,.72,.24,1) both; }
+  .confirmed strong{
+    font-family: var(--body);
+    font-weight: 400; font-style: italic;
+    font-size: 1.4rem; color: var(--ivory);
+  }
+  .confirmed span{ font-family: var(--deco); font-size: .85rem; color: var(--smoke); }
+
+  @keyframes rise{ from{opacity:0;transform:translateY(10px)} to{opacity:1;transform:none} }
+
+  .foot{
+    font-family: var(--engraved);
+    font-size: 0.58rem;
+    letter-spacing: 0.3em;
+    text-indent: 0.3em;
+    text-transform: uppercase;
+    color: var(--smoke);
+    margin: 2.5rem 0 0;
+    text-align: center;
+    position: relative;
+    z-index: 1;
+  }
+
+  /* ── The card sets itself, line by line ─────────────────────── */
+  html.js .card{ opacity: 0; transform: translateY(16px) scale(.985); }
+  html.js.ready .card{ opacity: 1; transform: none; transition: opacity 1.1s ease, transform 1.1s cubic-bezier(.19,.72,.24,1); }
+
+  html.js .inner > *{ opacity: 0; transform: translateY(10px); }
+  html.js.ready .inner > *{
+    opacity: 1; transform: none;
+    transition: opacity .9s ease, transform .9s cubic-bezier(.19,.72,.24,1);
+  }
+  html.js.ready .inner > *:nth-child(1){ transition-delay: .35s }
+  html.js.ready .inner > *:nth-child(2){ transition-delay: .5s }
+  html.js.ready .inner > *:nth-child(3){ transition-delay: .62s }
+  html.js.ready .inner > *:nth-child(4){ transition-delay: .74s }
+  html.js.ready .inner > *:nth-child(5){ transition-delay: .84s }
+  html.js.ready .inner > *:nth-child(6){ transition-delay: .93s }
+  html.js.ready .inner > *:nth-child(7){ transition-delay: 1.01s }
+  html.js.ready .inner > *:nth-child(8){ transition-delay: 1.08s }
+  html.js.ready .inner > *:nth-child(n+9){ transition-delay: 1.15s }
+
+  :focus-visible{ outline: 1px solid var(--brass); outline-offset: 5px; }
+
+  @media (prefers-reduced-motion: reduce){
+    html.js .card, html.js .inner > *{ opacity: 1; transform: none; }
+    html.js.ready .card, html.js.ready .inner > *{ transition: none; }
+    .confirmed.on{ animation: none; }
+  }
+</style>
+
+<div class="grain"></div>
+<div class="vignette"></div>
+
+<div class="stage">
+  <article class="card" id="card">
+    <div class="inner">
+
+      <div class="arch" aria-hidden="true">
+        <div class="rays"></div>
+      </div>
+
+      <p class="eng">Reserved for</p>
+
+      <h1 class="name">Sayang</h1>
+
+      <p class="lede">One table, one evening, and no one else on the list.</p>
+
+      <div class="div" aria-hidden="true"><i></i></div>
+
+      <div class="block">
+        <p class="eng">The date</p>
+        <p class="val">Friday, 4 September 2026<span class="sub">20.00 WIB</span></p>
+      </div>
+
+      <div class="block">
+        <p class="eng">The place</p>
+        <p class="val">Donna Bar &amp; Lounge<span class="sub"><a href="https://maps.app.goo.gl/2YWZXosEnAr5ToKk6" target="_blank" rel="noopener noreferrer">Open in Maps &nearr;</a></span></p>
+      </div>
+
+      <div class="block">
+        <p class="eng">The dress code</p>
+        <div class="code">
+          <span class="set" role="img" aria-label="Sayang: a dress">
+            <svg class="dress" viewBox="0 0 48 68" fill="none" stroke-width="2" stroke-linejoin="round" stroke-linecap="round">
+              <path class="veil brass-line" d="M16 8C14 16 13.5 22 17 29L7 60c11 5 23 5 34 0L31 29c3.5-7 3-13 1-21l-8 5z"/>
+              <path class="brass-line" d="M17.4 29.5c4.4 2 8.8 2 13.2 0"/>
+            </svg>
+          </span>
+          <span class="rule"></span>
+          <span class="set" role="img" aria-label="Dudut: a plain shirt, white or black">
+            <svg viewBox="0 0 72 64" fill="none" stroke-width="2.2" stroke-linejoin="round" stroke-linecap="round">
+              <path class="ivory-fill pitch-line" d="M27 5 13 10c-5 3-8 8-8 12L4 44l12 4 5-24v36h30V24l5 24 12-4-1-22c0-4-3-9-8-12L45 5l-9 10z"/>
+              <path class="pitch-line" d="M27 5.5 31.5 13M45 5.5 40.5 13M36 15.5V60"/>
+            </svg>
+            <svg viewBox="0 0 72 64" fill="none" stroke-width="2.2" stroke-linejoin="round" stroke-linecap="round">
+              <path class="pitch-fill brass-line" d="M27 5 13 10c-5 3-8 8-8 12L4 44l12 4 5-24v36h30V24l5 24 12-4-1-22c0-4-3-9-8-12L45 5l-9 10z"/>
+              <path class="brass-line" d="M27 5.5 31.5 13M45 5.5 40.5 13M36 15.5V60"/>
+            </svg>
+          </span>
+        </div>
+      </div>
+
+      <div class="div" aria-hidden="true"><i></i></div>
+
+      <div class="note">
+        <p>You've spent the whole year making room for everyone else, sayang. On the fourth, the room is yours.</p>
+        <p>The table is booked, the hour is set. All you have to do is wear the dress, walk in, and let the night happen. I'll be the one watching the door.</p>
+        <p class="eng sig">Yours — Dudut</p>
+      </div>
+
+      <div class="div" aria-hidden="true"><i></i></div>
+
+      <div class="block">
+        <p class="eng">The doors open in</p>
+        <div class="clock">
+          <div class="unit"><b id="dd">—</b><span>Days</span></div>
+          <div class="colon">:</div>
+          <div class="unit"><b id="hh">—</b><span>Hrs</span></div>
+          <div class="colon">:</div>
+          <div class="unit"><b id="mm">—</b><span>Min</span></div>
+          <div class="colon">:</div>
+          <div class="unit"><b id="ss">—</b><span>Sec</span></div>
+        </div>
+      </div>
+
+      <button class="yes" id="yes" type="button">I'll be there</button>
+      <div class="confirmed" id="confirmed">
+        <strong>Then it's settled.</strong>
+        <span>Bring nothing but yourself.</span>
+      </div>
+
+    </div>
+  </article>
+</div>
+
+<p class="foot">For Sayang · From Dudut</p>
+
+<script>
+(() => {
+  const root   = document.documentElement;
+  const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  requestAnimationFrame(() => requestAnimationFrame(() => root.classList.add('ready')));
+
+  /* ── The card leans toward the pointer, barely ──────────────── */
+  const card = document.getElementById('card');
+  const fine = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
+
+  if (fine && !reduce){
+    let raf = null, tx = 0, ty = 0;
+    window.addEventListener('pointermove', (e) => {
+      const r = card.getBoundingClientRect();
+      const cx = r.left + r.width / 2;
+      const cy = r.top + r.height / 2;
+      ty = Math.max(-1, Math.min(1, (e.clientX - cx) / (r.width  * 0.9)))  * 2.6;
+      tx = Math.max(-1, Math.min(1, (cy - e.clientY) / (r.height * 0.9))) * 1.6;
+      if (!raf) raf = requestAnimationFrame(() => {
+        card.style.transform = `rotateX(${tx}deg) rotateY(${ty}deg)`;
+        raf = null;
+      });
+    });
+    window.addEventListener('pointerleave', () => { card.style.transform = ''; });
+  }
+
+  /* ── Countdown ──────────────────────────────────────────────── */
+  const target = new Date('2026-09-04T20:00:00+07:00').getTime();
+  const pad = n => String(n).padStart(2, '0');
+  const cells = { dd: document.getElementById('dd'), hh: document.getElementById('hh'),
+                  mm: document.getElementById('mm'), ss: document.getElementById('ss') };
+  function tick(){
+    let d = target - Date.now();
+    if (!isFinite(d) || d < 0) d = 0;
+    const s = Math.floor(d / 1000);
+    cells.dd.textContent = pad(Math.floor(s / 86400));
+    cells.hh.textContent = pad(Math.floor(s / 3600) % 24);
+    cells.mm.textContent = pad(Math.floor(s / 60) % 60);
+    cells.ss.textContent = pad(s % 60);
+  }
+  tick();
+  setInterval(tick, 1000);
+
+  /* ── RSVP ───────────────────────────────────────────────────── */
+  const yes = document.getElementById('yes');
+  yes.addEventListener('click', () => {
+    yes.hidden = true;
+    document.getElementById('confirmed').classList.add('on');
+  });
+})();
+</script>
