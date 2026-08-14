@@ -479,7 +479,7 @@
 
       <div class="block">
         <p class="eng">The pick-up</p>
-        <p class="val">I'll come and get you.</p>
+        <p class="val">I'll come and get you.<span class="sub">18.30 WIB</span></p>
       </div>
 
       <div class="block">
@@ -583,7 +583,7 @@
   // Every boundary carries +07:00, so the card reads the same from any
   // device clock — these are absolute instants, not wall-clock times.
   const target = new Date('2026-09-04T20:00:00+07:00').getTime();
-  const night  = target - 60 * 60 * 1000;                       // an hour before
+  const night  = new Date('2026-09-04T18:30:00+07:00').getTime();  // when I leave to get her
   const after  = new Date('2026-09-05T04:00:00+07:00').getTime();
 
   const pad = n => String(n).padStart(2, '0');
