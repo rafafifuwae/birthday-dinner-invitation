@@ -312,6 +312,29 @@
     color: var(--brass-dim);
     line-height: 1.1;
   }
+  /* on the day itself a "00" in the days column is just noise */
+  html.no-days .unit-days, html.no-days .colon-days{ display: none; }
+
+  /* ── The three states ───────────────────────────────────────── */
+  .when-night, .when-after{ display: none; }
+  html.state-night .when-before{ display: none; }
+  html.state-night .when-night{ display: flex; }
+  html.state-after .when-before,
+  html.state-after .when-night{ display: none; }
+  html.state-after .when-after{ display: flex; }
+  /* nothing left to say yes to once the night has been and gone */
+  html.state-after .yes,
+  html.state-after .confirmed{ display: none; }
+
+  .state-line{
+    font-family: var(--body);
+    font-style: italic;
+    font-size: clamp(1.15rem, 4.4vw, 1.45rem);
+    line-height: 1.5;
+    color: var(--ivory);
+    margin: 0;
+    text-shadow: 0 0 34px rgba(241,229,198,0.16);
+  }
 
   /* Dress code */
   .code{ display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: center; gap: 1rem 1.2rem; }
@@ -455,6 +478,11 @@
       </div>
 
       <div class="block">
+        <p class="eng">The pick-up</p>
+        <p class="val">I'll come and get you.</p>
+      </div>
+
+      <div class="block">
         <p class="eng">The dress code</p>
         <div class="code">
           <span class="set" role="img" aria-label="Sayang: a dress">
@@ -487,17 +515,29 @@
 
       <div class="div" aria-hidden="true"><i></i></div>
 
-      <div class="block">
+      <!-- Three states, chosen from the clock. Only one is ever visible; the
+           countdown is the default so a JS failure still shows the card. -->
+      <div class="block when-before">
         <p class="eng">The doors open in</p>
         <div class="clock">
-          <div class="unit"><b id="dd">—</b><span>Days</span></div>
-          <div class="colon">:</div>
+          <div class="unit unit-days"><b id="dd">—</b><span>Days</span></div>
+          <div class="colon colon-days">:</div>
           <div class="unit"><b id="hh">—</b><span>Hrs</span></div>
           <div class="colon">:</div>
           <div class="unit"><b id="mm">—</b><span>Min</span></div>
           <div class="colon">:</div>
           <div class="unit"><b id="ss">—</b><span>Sec</span></div>
         </div>
+      </div>
+
+      <div class="block when-night">
+        <p class="eng">Tonight</p>
+        <p class="state-line">Everything's ready.<br>I'm already on my way.</p>
+      </div>
+
+      <div class="block when-after">
+        <p class="eng">Afterward</p>
+        <p class="state-line">You showed up.<br>Same table next year.</p>
       </div>
 
       <button class="yes" id="yes" type="button">I'll be there</button>
@@ -539,16 +579,35 @@
     window.addEventListener('pointerleave', () => { card.style.transform = ''; });
   }
 
-  /* ── Countdown ──────────────────────────────────────────────── */
+  /* ── Countdown, and the state the card is in ────────────────── */
+  // Every boundary carries +07:00, so the card reads the same from any
+  // device clock — these are absolute instants, not wall-clock times.
   const target = new Date('2026-09-04T20:00:00+07:00').getTime();
+  const night  = target - 60 * 60 * 1000;                       // an hour before
+  const after  = new Date('2026-09-05T04:00:00+07:00').getTime();
+
   const pad = n => String(n).padStart(2, '0');
   const cells = { dd: document.getElementById('dd'), hh: document.getElementById('hh'),
                   mm: document.getElementById('mm'), ss: document.getElementById('ss') };
+  let phase = null;
+
   function tick(){
-    let d = target - Date.now();
+    const now = Date.now();
+
+    const next = now >= after ? 'after' : now >= night ? 'night' : 'before';
+    if (next !== phase){
+      root.classList.remove('state-night', 'state-after');
+      if (next !== 'before') root.classList.add('state-' + next);
+      phase = next;
+    }
+    if (phase !== 'before') return;
+
+    let d = target - now;
     if (!isFinite(d) || d < 0) d = 0;
-    const s = Math.floor(d / 1000);
-    cells.dd.textContent = pad(Math.floor(s / 86400));
+    const s    = Math.floor(d / 1000);
+    const days = Math.floor(s / 86400);
+    root.classList.toggle('no-days', days === 0);
+    cells.dd.textContent = pad(days);
     cells.hh.textContent = pad(Math.floor(s / 3600) % 24);
     cells.mm.textContent = pad(Math.floor(s / 60) % 60);
     cells.ss.textContent = pad(s % 60);
