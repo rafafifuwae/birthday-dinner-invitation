@@ -3,11 +3,12 @@
 const fs = require('fs');
 const path = require('path');
 
+// Everything is written next to this file, which is what GitHub Pages serves.
 const DIR  = __dirname;
-const SITE = path.join(DIR, 'site');
+const SITE = DIR;
 const BASE = 'https://rafafifuwae.github.io/birthday-dinner-invitation';
 
-const body = fs.readFileSync(path.join(DIR, 'concept-reserved-donna.html'), 'utf8')
+const body = fs.readFileSync(path.join(DIR, 'source.html'), 'utf8')
   .replace(/^<title>.*<\/title>\s*/, '');   // the title moves into <head>
 
 const TITLE = 'Birthday Dinner Invitation';
@@ -73,4 +74,6 @@ fs.writeFileSync(path.join(SITE, 'og.html'), head(ogCss) + body + '\n</body>\n</
 
 fs.writeFileSync(path.join(SITE, 'robots.txt'), 'User-agent: *\nDisallow: /\n');
 
-console.log('built site/index.html, site/og.html, site/robots.txt');
+console.log('Wrote index.html, robots.txt, and og.html.');
+console.log('og.html is only scaffolding: screenshot it at 1200x630 to refresh');
+console.log('og.png, then delete it. It is gitignored, so it will not be pushed.');
