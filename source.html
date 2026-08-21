@@ -309,6 +309,61 @@
     text-shadow: 0 0 34px rgba(241,229,198,0.16);
   }
 
+  /* ── The final week ─────────────────────────────────────────── */
+  /* This rides on top of the countdown instead of replacing it: state-week
+     is set alongside "before", and dropped the moment the night arrives. */
+  .when-week{ display: none; }
+  html.state-week .when-week{ display: flex; }
+  html.state-night .when-week,
+  html.state-after .when-week{ display: none; }
+
+  /* Seven marks for seven nights. The ones already slept through go out. */
+  .week{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: clamp(.5rem, 2.4vw, .8rem);
+  }
+  .week[hidden]{ display: none; }
+  .week i{
+    display: block;
+    width: 7px; height: 7px;
+    transform: rotate(45deg);
+    border: 1px solid var(--brass);
+    background: var(--brass);
+    box-shadow: 0 0 12px rgba(200,174,121,0.45);
+    transition: background 1s ease, border-color 1s ease, box-shadow 1s ease, opacity 1s ease;
+  }
+  .week i.spent{
+    background: transparent;
+    border-color: rgba(200,174,121,0.30);
+    box-shadow: none;
+    opacity: .75;
+  }
+
+  .daily{
+    font-family: var(--body);
+    font-style: italic;
+    font-size: clamp(1rem, 3.6vw, 1.12rem);
+    line-height: 1.65;
+    color: var(--ivory);
+    margin: .2rem 0 0;
+    max-width: 20rem;
+    text-wrap: balance;
+  }
+
+  /* and the room comes up a little warmer */
+  html.state-week .card{
+    border-color: rgba(200,174,121,0.58);
+    box-shadow:
+      0 0 0 1px rgba(0,0,0,0.55),
+      0 50px 110px rgba(0,0,0,0.72),
+      0 0 90px rgba(200,174,121,0.10),
+      inset 0 1px 0 rgba(241,229,198,0.14);
+  }
+  html.state-week .arch .rays{ animation: breathe 9s ease-in-out infinite; }
+  @keyframes breathe{ 0%, 100%{ opacity: .82 } 50%{ opacity: 1 } }
+
   /* Dress code */
   .code{ display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: center; gap: 1rem 1.2rem; }
   .code .set{ display: flex; align-items: flex-end; gap: .8rem; }
@@ -383,7 +438,9 @@
 
   /* ── The card sets itself, line by line ─────────────────────── */
   html.js .card{ opacity: 0; transform: translateY(16px) scale(.985); }
-  html.js.ready .card{ opacity: 1; transform: none; transition: opacity 1.1s ease, transform 1.1s cubic-bezier(.19,.72,.24,1); }
+  html.js.ready .card{ opacity: 1; transform: none;
+    transition: opacity 1.1s ease, transform 1.1s cubic-bezier(.19,.72,.24,1),
+                border-color 1.4s ease, box-shadow 1.4s ease; }
 
   html.js .inner > *{ opacity: 0; transform: translateY(10px); }
   html.js.ready .inner > *{
@@ -406,6 +463,7 @@
     html.js .card, html.js .inner > *{ opacity: 1; transform: none; }
     html.js.ready .card, html.js.ready .inner > *{ transition: none; }
     .confirmed.on{ animation: none; }
+    html.state-week .arch .rays{ animation: none; }
   }
 </style>
 
@@ -491,7 +549,7 @@
       <!-- Three states, chosen from the clock. Only one is ever visible; the
            countdown is the default so a JS failure still shows the card. -->
       <div class="block when-before">
-        <p class="eng">The doors open in</p>
+        <p class="eng" id="doors">The doors open in</p>
         <div class="clock">
           <div class="unit unit-days"><b id="dd">—</b><span>Days</span></div>
           <div class="colon colon-days">:</div>
@@ -501,6 +559,16 @@
           <div class="colon">:</div>
           <div class="unit"><b id="ss">—</b><span>Sec</span></div>
         </div>
+      </div>
+
+      <!-- From the 28th only: seven marks, and a line that turns over at
+           midnight WIB. Empty until the script fills it, so nothing shows
+           if the clock never runs. -->
+      <div class="block when-week">
+        <div class="week" id="week" aria-hidden="true">
+          <i></i><i></i><i></i><i></i><i></i><i></i><i></i>
+        </div>
+        <p class="daily" id="daily"></p>
       </div>
 
       <div class="block when-night">
@@ -559,19 +627,51 @@
   const night  = new Date('2026-09-04T18:30:00+07:00').getTime();  // when I leave to get her
   const after  = new Date('2026-09-05T04:00:00+07:00').getTime();
 
+  // ?at=2026-08-30T21:00:00+07:00 freezes the clock there, so a state can be
+  // looked at before it arrives. A query string eats the "+", so it is put
+  // back. Nothing else on the page reads the query.
+  const at   = Date.parse((new URLSearchParams(location.search).get('at') || '')
+                          .replace(/ (\d\d:\d\d)$/, '+$1'));
+  const skew = isFinite(at) ? at - Date.now() : 0;
+  const clock = () => Date.now() + skew;
+
+  // The last week is counted in Jakarta calendar days, the way a person counts
+  // — "tomorrow", not "in 23 hours" — so each line turns over at midnight WIB.
+  const day    = ms => Math.floor((ms + 7 * 3600e3) / 864e5);
+  const theDay = day(target);
+
+  const LINES = [
+    'Today. Be ready at half six.',
+    "Tomorrow. I'll be outside at half six.",
+    'Two. Wear the dress; that is the only instruction.',
+    "Three. You still don't have to bring anything.",
+    'Four. Nothing left to arrange, which was the whole idea.',
+    'Five. Whatever else this week wants, Friday is taken.',
+    'Six. I keep checking the booking like it might change its mind.',
+    'Seven nights. The table has been ours all along.'
+  ];
+
   const pad = n => String(n).padStart(2, '0');
   const cells = { dd: document.getElementById('dd'), hh: document.getElementById('hh'),
                   mm: document.getElementById('mm'), ss: document.getElementById('ss') };
-  let phase = null;
+  const doors = document.getElementById('doors');
+  const daily = document.getElementById('daily');
+  const strip = document.getElementById('week');
+  const pips  = Array.from(strip.children);
+  let phase = null, shown = null;
 
   function tick(){
-    const now = Date.now();
+    const now = clock();
 
     const next = now >= after ? 'after' : now >= night ? 'night' : 'before';
     if (next !== phase){
       root.classList.remove('state-night', 'state-after');
-      if (next !== 'before') root.classList.add('state-' + next);
+      if (next !== 'before'){
+        root.classList.add('state-' + next);
+        root.classList.remove('state-week');
+      }
       phase = next;
+      shown = null;
     }
     if (phase !== 'before') return;
 
@@ -584,6 +684,23 @@
     cells.hh.textContent = pad(Math.floor(s / 3600) % 24);
     cells.mm.textContent = pad(Math.floor(s / 60) % 60);
     cells.ss.textContent = pad(s % 60);
+
+    // The rest only moves at midnight, so it is written once a day, not once
+    // a second — the pips and the line would otherwise re-paint 86,400 times.
+    const left = theDay - day(now);
+    if (left === shown) return;
+    shown = left;
+
+    const near = left <= 7;
+    root.classList.toggle('state-week', near);
+    doors.textContent = left === 0 ? 'Tonight, in'
+                      : near       ? 'The final week'
+                                   : 'The doors open in';
+    if (!near) return;
+
+    daily.textContent = LINES[Math.max(0, Math.min(7, left))];
+    strip.hidden = left === 0;   // seven marks with none lit would say nothing
+    pips.forEach((pip, i) => pip.classList.toggle('spent', i >= left));
   }
   tick();
   setInterval(tick, 1000);
